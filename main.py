@@ -107,18 +107,28 @@ def load_images(source: str):
     images = []
     source = "./img/lena_noised_"
     for i in range(1, 4): 
-        temp_img_src = source + str(i) + ".png"
+        temp_img_src = source + str(i) + ".jpg"
         print("loading image " + temp_img_src)
         temp_image = Image.open(temp_img_src)
         temp_array = asarray(temp_image)
         images.append(temp_array)
     return images 
 
-def remove_noise_avg(images): 
+def remove_noise_avg(images, count): 
     if len(images) > 0: 
         sample_img = images[0]
         row, col, _ = sample_img.shape 
         new_image = np.zeros([row, col, 3], dtype=np.uint8)
+        for x in range(row): 
+                for y in range(col): 
+                    temp_avg = [0, 0, 0]
+                    for i in range(count): 
+                        temp_avg = np.add(temp_avg, images[i][x][y])
+
+                    new_image[x][y] =  temp_avg // count
+                    
+        save_image(new_image, "./img/ohh_my_god_it_finally_worked.jpg")
+
 
     '''
     1. Load all the images first 
@@ -170,5 +180,7 @@ def interpolate(first_value: float, second_value: float, ratio: float) -> float:
 
 
 if __name__ == "__main__":
-    remove_noise_avg(load_images(""))
+    images = load_images("")
+    
+    remove_noise_avg(images, len(images))
     
